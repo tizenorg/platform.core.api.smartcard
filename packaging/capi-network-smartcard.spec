@@ -34,7 +34,10 @@ MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 
 cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} \
         -DMAJORVER=${MAJORVER} -DCMAKE_LIB_DIR=%{_libdir} \
+%ifarch %{arm}
 	-DTIZEN_SMARTCARD_SUPPORT=1
+%endif
+
 
 make %{?jobs:-j%jobs}
 
