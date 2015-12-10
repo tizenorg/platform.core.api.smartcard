@@ -34,11 +34,7 @@ MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 
 cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} \
         -DMAJORVER=${MAJORVER} -DCMAKE_LIB_DIR=%{_libdir} \
-%if "%{?tizen_profile_name}" == "mobile"
-	%ifarch %{arm}
-		-DTIZEN_SMARTCARD_SUPPORT=1
-	%endif
-%endif
+	-DTIZEN_SMARTCARD_SUPPORT=1
 
 make %{?jobs:-j%jobs}
 
