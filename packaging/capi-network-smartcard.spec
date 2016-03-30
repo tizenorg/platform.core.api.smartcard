@@ -1,6 +1,6 @@
 Name:       capi-network-smartcard
 Summary:    A Smartcard library in Native API
-Version:    0.0.4
+Version:    0.0.5
 Release:    1
 Group:      Network & Connectivity/Smartcard
 License:    Apache-2.0

@@ -127,9 +127,11 @@ static int _check_precondition_channel(int handle)
 		SMARTCARD_UNLOCK;
 		return SMARTCARD_ERROR_INVALID_PARAMETER;
 	}
+	/* LCOV_EXCL_START */
 	SMARTCARD_UNLOCK;
 
 	return SMARTCARD_ERROR_NONE;
+	/* LCOV_EXCL_STOP */
 }
 
 static smartcard_error_e _convert_error_code(const char *func, int native_error_code)
@@ -143,34 +145,48 @@ static smartcard_error_e _convert_error_code(const char *func, int native_error_
 		errorstr = "SMARTCARD_ERROR_NONE";
 		break;
 	case SCARD_ERROR_NOT_SUPPORTED:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_OPERATION_NOT_SUPPORTED;
 		errorstr = "SMARTCARD_ERROR_OPERATION_NOT_SUPPORTED";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_UNAVAILABLE:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_CHANNEL_NOT_AVAILABLE;
 		errorstr = "SMARTCARD_ERROR_CHANNEL_NOT_AVAILABLE";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_IPC_FAILED:
 	case SCARD_ERROR_IO_FAILED:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_IO_ERROR;
 		errorstr = "SMARTCARD_ERROR_IO_ERROR";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_SECURITY_NOT_ALLOWED:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_PERMISSION_DENIED;
 		errorstr = "SMARTCARD_ERROR_PERMISSION_DENIED";
-	break;
+		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_ILLEGAL_STATE:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_ILLEGAL_STATE;
 		errorstr = "SMARTCARD_ERROR_ILLEGAL_STATE";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_ILLEGAL_PARAM:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_INVALID_PARAMETER;
 		errorstr = "SMARTCARD_ERROR_INVALID_PARAMETER";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_ILLEGAL_REFERENCE:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_ILLEGAL_REFERENCE;
 		errorstr = "SMARTCARD_ERROR_ILLEGAL_REFERENCE";
 		break;
+		/* LCOV_EXCL_STOP */
 	case SCARD_ERROR_NOT_INITIALIZED:
 	case SCARD_ERROR_SE_NOT_INITIALIZED:
 	case SCARD_ERROR_OPERATION_NOT_SUPPORTED:
@@ -180,8 +196,10 @@ static smartcard_error_e _convert_error_code(const char *func, int native_error_
 	case SCARD_ERROR_OUT_OF_MEMORY:
 	case SCARD_ERROR_UNKNOWN:
 	default:
+		/* LCOV_EXCL_START */
 		error_code = SMARTCARD_ERROR_GENERAL;
 		errorstr = "SMARTCARD_ERROR_GENERAL";
+		/* LCOV_EXCL_STOP */
 	}
 
 	_ERR("smartcard func : %s, %s(0x%08x)\n", func, errorstr, error_code);
@@ -208,11 +226,11 @@ int smartcard_initialize(void)
 			/* create se service instance. */
 			se_service = se_service_create_instance_sync(NULL, &ret);
 			if (se_service == NULL || ret != SCARD_ERROR_OK) {
-				SMARTCARD_UNLOCK;
-				if (ret == SCARD_ERROR_SECURITY_NOT_ALLOWED)
+				SMARTCARD_UNLOCK; /* LCOV_EXCL_LINE */
+				if (ret == SCARD_ERROR_SECURITY_NOT_ALLOWED) /* LCOV_EXCL_LINE */
 					return SMARTCARD_ERROR_PERMISSION_DENIED;
 
-				return SMARTCARD_ERROR_GENERAL;
+				return SMARTCARD_ERROR_GENERAL; /* LCOV_EXCL_LINE */
 			}
 
 			_is_initialize = true;
@@ -252,8 +270,10 @@ int smartcard_deinitialize(void)
 			/* destroy se service instance. */
 			ret = se_service_destroy_instance(se_service);
 			if (ret != SCARD_ERROR_OK) {
+				/* LCOV_EXCL_START */
 				SMARTCARD_UNLOCK;
 				return SMARTCARD_ERROR_GENERAL;
+				/* LCOV_EXCL_STOP */
 			}
 
 			se_service = NULL;
@@ -604,6 +624,7 @@ int smartcard_session_open_basic_channel(int session, unsigned char *aid, int ai
 
 	cond_expr_ret(NULL == channel, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_session(session);
 	cond_ret(ret);
 
@@ -621,6 +642,7 @@ int smartcard_session_open_basic_channel(int session, unsigned char *aid, int ai
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -640,6 +662,7 @@ int smartcard_session_open_logical_channel(int session, unsigned char *aid, int 
 
 	cond_expr_ret(NULL == channel, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_session(session);
 	cond_ret(ret);
 
@@ -657,6 +680,7 @@ int smartcard_session_open_logical_channel(int session, unsigned char *aid, int 
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -679,12 +703,13 @@ int smartcard_channel_close(int channel)
 	cond_ret(ret);
 
 	/* precondition check end */
-
+	/* LCOV_EXCL_START */
 	ret = channel_close_sync((channel_h)channel);
 
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -703,6 +728,7 @@ int smartcard_channel_is_basic_channel(int channel, bool *is_basic_channel)
 
 	cond_expr_ret(NULL == is_basic_channel, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_channel(channel);
 	cond_ret(ret);
 
@@ -713,6 +739,7 @@ int smartcard_channel_is_basic_channel(int channel, bool *is_basic_channel)
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -731,6 +758,7 @@ int smartcard_channel_is_closed(int channel, bool *is_closed)
 
 	cond_expr_ret(NULL == is_closed, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_channel(channel);
 	cond_ret(ret);
 
@@ -741,6 +769,7 @@ int smartcard_channel_is_closed(int channel, bool *is_closed)
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -760,6 +789,7 @@ int smartcard_channel_get_select_response(int channel, unsigned char **select_re
 	CHECK_INIT();
 
 	cond_expr_ret(NULL == select_resp, SMARTCARD_ERROR_INVALID_PARAMETER);
+	/* LCOV_EXCL_START */
 	cond_expr_ret(NULL == length, SMARTCARD_ERROR_INVALID_PARAMETER);
 
 	ret = _check_precondition_channel(channel);
@@ -773,6 +803,7 @@ int smartcard_channel_get_select_response(int channel, unsigned char **select_re
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -791,6 +822,7 @@ int smartcard_channel_get_session(int channel, int *session)
 
 	cond_expr_ret(NULL == session, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_channel(channel);
 	cond_ret(ret);
 
@@ -801,6 +833,7 @@ int smartcard_channel_get_session(int channel, int *session)
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -819,6 +852,7 @@ int smartcard_channel_transmit(int channel, unsigned char *cmd, int cmd_len,
 	CHECK_INIT();
 
 	cond_expr_ret(NULL == resp, SMARTCARD_ERROR_INVALID_PARAMETER);
+	/* LCOV_EXCL_START */
 	cond_expr_ret(NULL == length, SMARTCARD_ERROR_INVALID_PARAMETER);
 
 	ret = _check_precondition_channel(channel);
@@ -831,6 +865,7 @@ int smartcard_channel_transmit(int channel, unsigned char *cmd, int cmd_len,
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -849,6 +884,7 @@ int smartcard_channel_transmit_retrieve_response(int channel, unsigned char **re
 	CHECK_INIT();
 
 	cond_expr_ret(NULL == resp, SMARTCARD_ERROR_INVALID_PARAMETER);
+	/* LCOV_EXCL_START */
 	cond_expr_ret(NULL == length, SMARTCARD_ERROR_INVALID_PARAMETER);
 
 	ret = _check_precondition_channel(channel);
@@ -862,6 +898,7 @@ int smartcard_channel_transmit_retrieve_response(int channel, unsigned char **re
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
 
@@ -880,6 +917,7 @@ int smartcard_channel_select_next(int channel, bool *is_success)
 
 	cond_expr_ret(NULL == is_success, SMARTCARD_ERROR_INVALID_PARAMETER);
 
+	/* LCOV_EXCL_START */
 	ret = _check_precondition_channel(channel);
 	cond_ret(ret);
 
@@ -890,5 +928,6 @@ int smartcard_channel_select_next(int channel, bool *is_success)
 	_END();
 
 	return _convert_error_code(__func__, ret);
+	/* LCOV_EXCL_STOP */
 #endif
 }
