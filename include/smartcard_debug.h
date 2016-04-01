@@ -28,61 +28,49 @@
 #define COLOR_END   "\033[0;m"
 
 #define _ERR(fmt, ...) \
-	do \
-	{ \
+	do { \
 		LOGE(COLOR_RED fmt COLOR_END, ##__VA_ARGS__); \
-	} \
-	while (0)
+	} while (0)
 
 #define _INFO(fmt, ...) \
-	do \
-	{ \
+	do { \
 		LOGI(COLOR_GREEN fmt COLOR_END, ##__VA_ARGS__); \
-	} \
-	while (0)
+	} while (0)
 
 #define _WARN(fmt, ...) \
-	do \
-	{ \
+	do { \
 		LOGI(COLOR_BROWN fmt COLOR_END, ##__VA_ARGS__); \
-	} \
-	while (0)
+	} while (0)
 
 #define _DBG(fmt, ...) \
-	do \
-	{ \
+	do { \
 		LOGD(fmt, ##__VA_ARGS__); \
-	} \
-	while (0)
+	} while (0)
 
 #define _BEGIN() \
-	do \
-	{ \
+	do { \
 		LOGD(COLOR_BLUE "BEGIN >>>>" COLOR_END); \
-	} \
-	while (0)
+	} while (0)
 
 #define _END() \
-	do \
-	{ \
+	do { \
 		LOGD(COLOR_BLUE "END <<<<" COLOR_END); \
-	} \
-	while (0)
+	} while (0)
 
 #define cond_expr_ret(expr, val) \
-	do {\
+	do { \
 		if (expr) { \
 			_ERR("[precond fail] expr : %s, ret : %d\n", #expr, val); \
 			return (val); \
 		} \
-	} while(0)
+	} while (0)
 
 #define cond_ret(val) \
-	do {\
-		if(val) { \
+	do { \
+		if (val) { \
 			_ERR("[precond fail] ret : %d\n", val); \
 			return (val); \
 		} \
-	} while(0)
+	} while (0)
 
 #endif
