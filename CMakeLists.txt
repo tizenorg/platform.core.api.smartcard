@@ -10,7 +10,7 @@ SET(service "network")
 SET(submodule "smartcard")
 
 # for package file
-SET(dependents "dlog glib-2.0 gio-2.0 capi-base-common smartcard-service smartcard-service-common capi-system-info")
+SET(dependents "dlog glib-2.0 gio-2.0 capi-base-common smartcard-service-common capi-system-info")
 SET(pc_dependents "capi-base-common")
 
 SET(fw_name "${project_prefix}-${service}-${submodule}")
@@ -29,10 +29,13 @@ INCLUDE(FindPkgConfig)
 pkg_check_modules(${fw_name} REQUIRED ${dependents})
 FOREACH(flag ${${fw_name}_CFLAGS})
     SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
+    SET(EXTRA_CXXFLAGS "${EXTRA_CXXFLAGS} ${flag}")
 ENDFOREACH(flag)
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -fPIC -Wall -Werror")
 SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXXFLAGS} -fPIC -Wall -Werror")
+SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 
 ADD_DEFINITIONS("-DPREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 ADD_DEFINITIONS("-DTIZEN_DEBUG")
@@ -43,7 +46,7 @@ ENDIF(TIZEN_SMARTCARD_SUPPORT)
 
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=${LIBDIR}")
 
-SET(SOURCES src/smartcard.c)
+AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/src SOURCES)
 
 ADD_LIBRARY(${fw_name} SHARED ${SOURCES})
 
