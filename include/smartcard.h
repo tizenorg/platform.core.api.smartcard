@@ -54,6 +54,14 @@ typedef enum {
 	SMARTCARD_ERROR_NOT_SUPPORTED = TIZEN_ERROR_NOT_SUPPORTED, /**< Not supported */
 } smartcard_error_e;
 
+typedef enum {
+	SMARTCARD_READER_EVENT_TYPE_IOERROR = 0,
+	SMARTCARD_READER_EVENT_TYPE_INSERTED = 1,
+	SMARTCARD_READER_EVENT_TYPE_REMOVED = 2,
+} smartcard_reader_event_type_e;
+
+typedef void (*smartcard_reader_event_cb)(int reader, smartcard_reader_event_type_e event_type, void *user_data);
+
 /**
  * @brief Initializes smartcard service
  * @since_tizen 2.3.1
@@ -201,6 +209,37 @@ SMARTCARD_API int smartcard_reader_open_session(int reader, int *session);
  * @see smartcard_get_readers()
  */
 SMARTCARD_API int smartcard_reader_close_sessions(int reader);
+
+/**
+ * @brief Sets a callback function for receiving reader event.
+ * @since_tizen 3.0
+ * @ingroup CAPI_NETWORK_SMARTCARD_READER_MODULE
+ *
+ * @param [in] reader Handle to the reader
+ *
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #SMARTCARD_ERROR_NONE Successful
+ * @retval #SMARTCARD_ERROR_INVALID_PARAMETER Invalid function parameter
+ * @retval #SMARTCARD_ERROR_NOT_INITIALIZED Smartcard service not initialized
+ * @retval #SMARTCARD_ERROR_NOT_SUPPORTED Not supported
+ *
+ * @see smartcard_reader_unset_event_cb()
+ */
+SMARTCARD_API int smartcard_reader_set_event_cb(smartcard_reader_event_cb cb, void *user_data);
+
+/**
+ * @brief Unsets the reader event callback function.
+ * @since_tizen 3.0
+ * @ingroup CAPI_NETWORK_SMARTCARD_READER_MODULE
+ *
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #SMARTCARD_ERROR_NONE Successful
+ * @retval #SMARTCARD_ERROR_NOT_INITIALIZED Smartcard service not initialized
+ * @retval #SMARTCARD_ERROR_NOT_SUPPORTED Not supported
+ *
+ * @see smartcard_reader_set_event_cb()
+ */
+SMARTCARD_API int smartcard_reader_unset_event_cb(void);
 
 /**
  * @brief Gets the reader that provides the given session.

@@ -339,6 +339,56 @@ int smartcard_get_readers(int **readers, int *length)
 
 /*----------------<reader mapping api>------------------*/
 
+int smartcard_reader_set_event_cb(smartcard_reader_event_cb cb, void *user_data)
+{
+#ifndef TIZEN_SMARTCARD_SUPPORT
+	return SMARTCARD_ERROR_NOT_SUPPORTED;
+#else
+	int ret = SMARTCARD_ERROR_NONE;
+
+	_BEGIN();
+
+	/* precondition check start */
+
+	CHECK_SUPPORTED();
+	CHECK_INIT();
+
+	cond_expr_ret(NULL == cb, SMARTCARD_ERROR_INVALID_PARAMETER);
+
+	/* precondition check end */
+
+	se_service_set_event_handler(se_service, (se_service_event_cb)cb, user_data);
+
+	_END();
+
+	return _convert_error_code(__func__, ret);
+#endif
+}
+
+int smartcard_reader_unset_event_cb(void)
+{
+#ifndef TIZEN_SMARTCARD_SUPPORT
+	return SMARTCARD_ERROR_NOT_SUPPORTED;
+#else
+	int ret = SMARTCARD_ERROR_NONE;
+
+	_BEGIN();
+
+	/* precondition check start */
+
+	CHECK_SUPPORTED();
+	CHECK_INIT();
+
+	/* precondition check end */
+
+	se_service_unset_event_handler(se_service);
+
+	_END();
+
+	return _convert_error_code(__func__, ret);
+#endif
+}
+
 int smartcard_reader_get_name(int reader, char **reader_name)
 {
 #ifndef TIZEN_SMARTCARD_SUPPORT
